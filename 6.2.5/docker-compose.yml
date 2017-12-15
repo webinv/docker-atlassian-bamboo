@@ -23,7 +23,7 @@ services:
     environment:
       TZ: ${TZ:-UTC}
     volumes:
-      - bamboo-data:/opt/atlassian/bamboo/data
+      - bamboo-data:/var/atlassian/bamboo/data
 volumes:
   postgres-data:
   bamboo-data:

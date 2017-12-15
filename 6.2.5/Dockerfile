@@ -41,11 +41,13 @@ RUN \
     useradd -r --uid ${RUN_USER_UID} -g ${RUN_GROUP} ${RUN_USER}
 
 ENV BAMBOO_INSTALL_DIR   /opt/atlassian/bamboo
+ENV BAMBOO_HOME   /var/atlassian/bamboo/data
 ENV BAMBOO_VERSION 6.2.5
 
-RUN mkdir -p                             ${BAMBOO_INSTALL_DIR} ${BAMBOO_HOME} \
-    && curl -L --silent                  ${DOWNLOAD_URL}${BAMBOO_VERSION}.tar.gz | tar -xz --strip=1 -C "$BAMBOO_INSTALL_DIR" \
-    && chown -R ${RUN_USER}:${RUN_GROUP} ${BAMBOO_INSTALL_DIR}
+RUN mkdir -p ${BAMBOO_INSTALL_DIR} ${BAMBOO_HOME} && \
+    curl -L --silent ${DOWNLOAD_URL}${BAMBOO_VERSION}.tar.gz | tar -xz --strip=1 -C "$BAMBOO_INSTALL_DIR" && \
+    chown -R ${RUN_USER}:${RUN_GROUP} ${BAMBOO_INSTALL_DIR} ${BAMBOO_HOME}
+
 
 # MySQL connector
 ENV MYSQL_CONNECTOR_VERSION 5.1.44
