@@ -7,6 +7,8 @@ if [ "$1" = 'start-bamboo.sh' ]; then
 
       groupadd --gid ${RUN_GROUP_GID} -r ${RUN_GROUP} && \
       useradd -r --uid ${RUN_USER_UID} -g ${RUN_GROUP} -d ${BAMBOO_INSTALL_DIR} ${RUN_USER}
+      usermod -a -G docker ${RUN_USER}
+      
       chown -R ${RUN_USER}:${RUN_GROUP} ${BAMBOO_INSTALL_DIR} ${BAMBOO_HOME}
     fi
 

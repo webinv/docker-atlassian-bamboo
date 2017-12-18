@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # Install git, download and extract Stash and create the required directory layout.
 # Try to limit the number of RUN instructions to minimise the number of layers that will need to be created.
 RUN apt-get update -qq \
-    && apt-get install -y wget curl git unzip libtcnative-1 xmlstarlet gosu gnupg2 software-properties-common \
+    && apt-get install -y wget curl git unzip libtcnative-1 xmlstarlet gosu apt-transport-https gnupg2 software-properties-common \
     && apt-get clean autoclean \
     && apt-get autoremove --yes \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/
@@ -14,7 +14,7 @@ RUN apt-get update -qq \
 # Docker
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg |  apt-key add - && \
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
-    apt-get update && apt-get install=17.06.* -y docker-ce && \
+    apt-get update && apt-get install -y docker-ce=17.06.* && \
     echo docker-ce hold | dpkg --set-selections && \
     curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
 
@@ -45,7 +45,8 @@ ENV RUN_GROUP_GID       5000
 
 RUN \
     groupadd --gid ${RUN_GROUP_GID} -r ${RUN_GROUP} && \
-    useradd -r --uid ${RUN_USER_UID} -g ${RUN_GROUP},docker ${RUN_USER}
+    useradd -r --uid ${RUN_USER_UID} -g ${RUN_GROUP} ${RUN_USER} && \
+    usermod -a -G docker ${RUN_USER}
 
 ENV BAMBOO_INSTALL_DIR   /opt/atlassian/bamboo
 ENV BAMBOO_HOME   /var/atlassian/bamboo/data
