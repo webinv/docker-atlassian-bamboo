@@ -11,6 +11,13 @@ RUN apt-get update -qq \
     && apt-get autoremove --yes \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/
 
+# Docker
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg |  apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
+    apt-get update && apt-get install=17.06.* -y docker-ce && \
+    echo docker-ce hold | dpkg --set-selections && \
+    curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+
 # Download Oracle JDK
 ENV ORACLE_JDK_VERSION jdk-8u151
 ENV ORACLE_JDK_URL http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz
@@ -38,7 +45,7 @@ ENV RUN_GROUP_GID       5000
 
 RUN \
     groupadd --gid ${RUN_GROUP_GID} -r ${RUN_GROUP} && \
-    useradd -r --uid ${RUN_USER_UID} -g ${RUN_GROUP} ${RUN_USER}
+    useradd -r --uid ${RUN_USER_UID} -g ${RUN_GROUP},docker ${RUN_USER}
 
 ENV BAMBOO_INSTALL_DIR   /opt/atlassian/bamboo
 ENV BAMBOO_HOME   /var/atlassian/bamboo/data
